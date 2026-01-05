@@ -1,0 +1,667 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
+ */
+package COM.AVISHKA.GUI;
+
+import COM.AVISHKA.MODEL.Mysql;
+import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import java.io.InputStream;
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.view.JasperViewer;
+
+/**
+ *
+ * @author PCVIEW
+ */
+public class PutAttendance extends javax.swing.JDialog {
+
+    private static HashMap<String, String> EmployeeTypeMap = new HashMap<>();
+    private static HashMap<String, String> EmployeeAttendStatusMap = new HashMap<>();
+    
+    /**
+     * Creates new form PutAttendance
+     */
+    public PutAttendance(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+        init();
+        loadEmployeeType();
+        loadAttendStatus();
+        loadPutAttendance(roundTextField1.getText());
+        Date currDate = new Date();
+        jDateChooser1.setDate(currDate);
+    }
+    
+    private void loadEmployeeType() {
+
+        try {
+
+            ResultSet rs1 = Mysql.executeSearch("SELECT * FROM `employee_type` WHERE `id`!='4'");
+
+            Vector<String> vector = new Vector<>();
+            vector.add("SELECT EMPLOYEE TYPE");
+
+            while (rs1.next()) {
+                vector.add(rs1.getString("name"));
+                EmployeeTypeMap.put(rs1.getString("name"), rs1.getString("id"));
+
+            }
+            DefaultComboBoxModel comboBoxModel = (DefaultComboBoxModel) jComboBox2.getModel();
+            comboBoxModel.removeAllElements();
+            comboBoxModel.addAll(vector);
+            jComboBox2.setSelectedIndex(0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    private void loadAttendStatus() {
+
+        try {
+
+            ResultSet rs1 = Mysql.executeSearch("SELECT * FROM `att_status`");
+
+            Vector<String> vector = new Vector<>();
+            vector.add("SELECT STATUS");
+
+            while (rs1.next()) {
+                vector.add(rs1.getString("status_name"));
+                EmployeeAttendStatusMap.put(rs1.getString("status_name"), rs1.getString("id"));
+
+            }
+            DefaultComboBoxModel comboBoxModel = (DefaultComboBoxModel) jComboBox1.getModel();
+            comboBoxModel.removeAllElements();
+            comboBoxModel.addAll(vector);
+            jComboBox1.setSelectedIndex(0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void loadPutAttendance(String txt){
+    
+        try {
+            DefaultTableModel dtm = (DefaultTableModel)jTable1.getModel();
+            dtm.setRowCount(0);
+            
+            
+            String query = "SELECT * FROM `employee`"
+                    + "INNER JOIN `employee_type` ON `employee_type_id` = `employee_type`.`id`"
+                    + "INNER JOIN `employee_attendance` ON `employee`.`id`=`employee_attendance`.`employee_id`"
+                    + "INNER JOIN `att_status` ON `employee_attendance`.`att_status_id`=`att_status`.`id`"
+                    + "WHERE `employee`.`id` LIKE '%"+txt+"%' OR `fname` LIKE  '"+txt+"%' OR `lname` LIKE  '"+txt+"%' OR `date` LIKE '"+txt+"%' ";
+            
+            ResultSet resultSet = Mysql.executeSearch(query);
+            
+            while (resultSet.next()) {                
+               
+                Vector vector = new Vector();
+                vector.add(resultSet.getString("employee.id"));
+                vector.add(resultSet.getString("fname"));
+                vector.add(resultSet.getString("lname"));
+                vector.add(resultSet.getString("employee_type.name"));
+                vector.add(resultSet.getString("date"));
+                vector.add(resultSet.getString("att_status.status_name"));
+               
+                
+                               
+                dtm.addRow(vector);
+            }
+        } catch (Exception e) {
+        e.printStackTrace();
+        }
+    
+    
+    
+    
+    }
+    
+    private void reset(){
+    
+        roundTextField1.setText("");
+        jComboBox1.setSelectedIndex(0);
+        jComboBox2.setSelectedIndex(0);
+        Date currDate = new Date();
+        jDateChooser1.setDate(currDate);
+        loadPutAttendance("");
+    
+    
+    
+    }
+    
+   
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        roundPanel1 = new COM.AVISHKA.COMPONENT.RoundPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        roundPanel2 = new COM.AVISHKA.COMPONENT.RoundPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        buttonGradient4 = new COM.AVISHKA.COMPONENT.ButtonGradient();
+        roundTextField1 = new COM.AVISHKA.COMPONENT.roundTextField();
+        buttonGradient5 = new COM.AVISHKA.COMPONENT.ButtonGradient();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        buttonGradient6 = new COM.AVISHKA.COMPONENT.ButtonGradient();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        buttonGradient7 = new COM.AVISHKA.COMPONENT.ButtonGradient();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        roundPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel9.setText("PUT ATTENDANCE");
+
+        javax.swing.GroupLayout roundPanel1Layout = new javax.swing.GroupLayout(roundPanel1);
+        roundPanel1.setLayout(roundPanel1Layout);
+        roundPanel1Layout.setHorizontalGroup(
+            roundPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundPanel1Layout.createSequentialGroup()
+                .addGap(331, 331, 331)
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        roundPanel1Layout.setVerticalGroup(
+            roundPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(12, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(roundPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(roundPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        roundPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "First Name", "Last Name", "Type", "Date", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+
+        buttonGradient4.setText("Print Report");
+        buttonGradient4.setColor1(new java.awt.Color(0, 51, 153));
+        buttonGradient4.setColor2(new java.awt.Color(5, 30, 80));
+        buttonGradient4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        buttonGradient4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonGradient4ActionPerformed(evt);
+            }
+        });
+
+        roundTextField1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+
+        buttonGradient5.setText("SEARCH");
+        buttonGradient5.setColor1(new java.awt.Color(0, 51, 153));
+        buttonGradient5.setColor2(new java.awt.Color(5, 30, 80));
+        buttonGradient5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        buttonGradient5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonGradient5ActionPerformed(evt);
+            }
+        });
+
+        jComboBox1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jComboBox1.setForeground(new java.awt.Color(153, 153, 153));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jComboBox2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jComboBox2.setForeground(new java.awt.Color(153, 153, 153));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
+
+        buttonGradient6.setText("RESET ALL");
+        buttonGradient6.setColor1(new java.awt.Color(0, 51, 153));
+        buttonGradient6.setColor2(new java.awt.Color(5, 30, 80));
+        buttonGradient6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        buttonGradient6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonGradient6ActionPerformed(evt);
+            }
+        });
+
+        jDateChooser1.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                jDateChooser1InputMethodTextChanged(evt);
+            }
+        });
+        jDateChooser1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jDateChooser1PropertyChange(evt);
+            }
+        });
+        jDateChooser1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jDateChooser1KeyReleased(evt);
+            }
+        });
+
+        buttonGradient7.setText("SEARCH DATE");
+        buttonGradient7.setColor1(new java.awt.Color(0, 51, 153));
+        buttonGradient7.setColor2(new java.awt.Color(5, 30, 80));
+        buttonGradient7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        buttonGradient7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonGradient7ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout roundPanel2Layout = new javax.swing.GroupLayout(roundPanel2);
+        roundPanel2.setLayout(roundPanel2Layout);
+        roundPanel2Layout.setHorizontalGroup(
+            roundPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(roundPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(buttonGradient4, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(roundPanel2Layout.createSequentialGroup()
+                        .addComponent(roundTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(buttonGradient5, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(roundPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                            .addComponent(buttonGradient7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(buttonGradient6, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        roundPanel2Layout.setVerticalGroup(
+            roundPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(roundPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(roundPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(roundTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(roundPanel2Layout.createSequentialGroup()
+                            .addGroup(roundPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(2, 2, 2)))
+                    .addComponent(buttonGradient5, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buttonGradient6, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(roundPanel2Layout.createSequentialGroup()
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonGradient7, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(buttonGradient4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(roundPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(roundPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void buttonGradient4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonGradient4ActionPerformed
+        // TODO add your handling code here:
+        
+        this.dispose();
+        
+        try {
+           InputStream s = this.getClass().getResourceAsStream("/Repots/Attendance.jasper");
+           JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable1.getModel());
+            JasperPrint jasperPrint = JasperFillManager.fillReport(s, null,dataSource);
+            
+            JasperViewer.viewReport(jasperPrint,false);
+           
+            
+            
+        } catch (Exception e) {
+        e.printStackTrace();
+        }
+        
+        
+    }//GEN-LAST:event_buttonGradient4ActionPerformed
+
+    private void buttonGradient5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonGradient5ActionPerformed
+        // TODO add your handling code here:
+        String txt =   roundTextField1.getText();
+        if (txt.isEmpty()) {
+            loadPutAttendance("");
+        }else{
+        loadPutAttendance(txt);
+        }
+    }//GEN-LAST:event_buttonGradient5ActionPerformed
+
+    private void buttonGradient6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonGradient6ActionPerformed
+        // TODO add your handling code here:
+        reset();
+    }//GEN-LAST:event_buttonGradient6ActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        // TODO add your handling code here:
+        
+        String type = String.valueOf(jComboBox2.getSelectedItem());
+        
+        if (type.equals("SELECT EMPLOYEE TYPE")) {
+            loadPutAttendance("");
+        }else{
+        try {
+           
+             DefaultTableModel dtm = (DefaultTableModel)jTable1.getModel();
+            dtm.setRowCount(0);
+            
+            String query = "SELECT * FROM `employee`"
+                    + "INNER JOIN `employee_type` ON `employee_type_id` = `employee_type`.`id`"
+                    + "INNER JOIN `employee_attendance` ON `employee`.`id`=`employee_attendance`.`employee_id`"
+                    + "INNER JOIN `att_status` ON `employee_attendance`.`att_status_id`=`att_status`.`id`"
+                    + " WHERE `employee_type`.`id` = '"+EmployeeTypeMap.get(type)+"'";
+            
+           ResultSet resultSet = Mysql.executeSearch(query);
+            
+//            }
+            
+            
+            
+
+            
+            while (resultSet.next()) {                
+               
+               Vector vector = new Vector();
+                vector.add(resultSet.getString("employee.id"));
+                vector.add(resultSet.getString("fname"));
+                vector.add(resultSet.getString("lname"));
+                vector.add(resultSet.getString("employee_type.name"));
+                vector.add(resultSet.getString("date"));
+                vector.add(resultSet.getString("att_status.status_name"));
+               
+                
+                               
+                dtm.addRow(vector);
+            }
+            
+            
+            
+        } catch (Exception e) {
+        e.printStackTrace();
+        }
+        }
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+         String type = String.valueOf(jComboBox1.getSelectedItem());
+        
+        if (type.equals("SELECT STATUS")) {
+            loadPutAttendance("");
+        }else{
+        try {
+           
+             DefaultTableModel dtm = (DefaultTableModel)jTable1.getModel();
+            dtm.setRowCount(0);
+            
+            String query = "SELECT * FROM `employee`"
+                    + "INNER JOIN `employee_type` ON `employee_type_id` = `employee_type`.`id`"
+                    + "INNER JOIN `employee_attendance` ON `employee`.`id`=`employee_attendance`.`employee_id`"
+                    + "INNER JOIN `att_status` ON `employee_attendance`.`att_status_id`=`att_status`.`id`"
+                    + " WHERE `employee_attendance`.`att_status_id` = '"+EmployeeAttendStatusMap.get(type)+"'";
+            
+           ResultSet resultSet = Mysql.executeSearch(query);
+            
+//           }
+            
+            
+            
+
+            
+            while (resultSet.next()) {                
+               
+               Vector vector = new Vector();
+                vector.add(resultSet.getString("employee.id"));
+                vector.add(resultSet.getString("fname"));
+                vector.add(resultSet.getString("lname"));
+                vector.add(resultSet.getString("employee_type.name"));
+                vector.add(resultSet.getString("date"));
+                vector.add(resultSet.getString("att_status.status_name"));
+               
+                
+                               
+                dtm.addRow(vector);
+            }
+            
+            
+            
+        } catch (Exception e) {
+        e.printStackTrace();
+        }
+        }
+        
+        
+        
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jDateChooser1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jDateChooser1KeyReleased
+        // TODO add your handling code here:
+        
+         
+        
+            
+            
+            
+           
+       
+    }//GEN-LAST:event_jDateChooser1KeyReleased
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        
+        
+        
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jDateChooser1InputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jDateChooser1InputMethodTextChanged
+        // TODO add your handling code here:
+        
+        
+        
+        
+    }//GEN-LAST:event_jDateChooser1InputMethodTextChanged
+
+    private void jDateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser1PropertyChange
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jDateChooser1PropertyChange
+
+    private void buttonGradient7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonGradient7ActionPerformed
+        // TODO add your handling code here:
+          try {
+             Date date = jDateChooser1.getDate();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String fdate = sdf.format(date);
+        
+         DefaultTableModel dtm = (DefaultTableModel)jTable1.getModel();
+            dtm.setRowCount(0);
+            
+             if (fdate !=null) {
+            
+        ResultSet resultSet =    Mysql.executeSearch("SELECT * FROM `employee`"
+                    + "INNER JOIN `employee_type` ON `employee_type_id` = `employee_type`.`id`"
+                    + "INNER JOIN `employee_attendance` ON `employee`.`id`=`employee_attendance`.`employee_id`"
+                    + "INNER JOIN `att_status` ON `employee_attendance`.`att_status_id`=`att_status`.`id`"
+                    + " WHERE `date`= '"+fdate+"' " );
+      
+        
+         while (resultSet.next()) {                
+               
+               Vector vector = new Vector();
+                vector.add(resultSet.getString("employee.id"));
+                vector.add(resultSet.getString("fname"));
+                vector.add(resultSet.getString("lname"));
+                vector.add(resultSet.getString("employee_type.name"));
+                vector.add(resultSet.getString("date"));
+                vector.add(resultSet.getString("att_status.status_name"));
+               
+                
+                               
+                dtm.addRow(vector);
+                
+                System.out.println("OK");
+             
+             
+        
+         }
+        
+        }
+        } catch (Exception e) {
+        e.printStackTrace();
+              
+        }
+        
+    }//GEN-LAST:event_buttonGradient7ActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        FlatMacLightLaf.setup();
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                PutAttendance dialog = new PutAttendance(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private COM.AVISHKA.COMPONENT.ButtonGradient buttonGradient4;
+    private COM.AVISHKA.COMPONENT.ButtonGradient buttonGradient5;
+    private COM.AVISHKA.COMPONENT.ButtonGradient buttonGradient6;
+    private COM.AVISHKA.COMPONENT.ButtonGradient buttonGradient7;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private COM.AVISHKA.COMPONENT.RoundPanel roundPanel1;
+    private COM.AVISHKA.COMPONENT.RoundPanel roundPanel2;
+    private COM.AVISHKA.COMPONENT.roundTextField roundTextField1;
+    // End of variables declaration//GEN-END:variables
+
+    private void init() {
+        jComboBox1.putClientProperty(FlatClientProperties.STYLE, "arc:100");
+        jComboBox2.putClientProperty(FlatClientProperties.STYLE, "arc:100");
+    }
+}
